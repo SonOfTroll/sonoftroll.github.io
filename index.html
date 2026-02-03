@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kishan Pandey | Security Operations Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="grid-bg"></div>
+  <div id="particles"></div>
+
+  <header class="main-header">
+    <div class="header-inner">
+      <a href="#" class="logo identity-badge">
+        <span class="identity-name">Kishan Pandey</span>
+        <span class="identity-handle">(val3nt1n3-d4c)</span>
+      </a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="nav-links" id="nav-links">
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#ctf">CTF</a>
+        <a href="#certifications">Certifications</a>
+        <a href="#timeline">Timeline</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button id="view-toggle" class="view-toggle" aria-label="Toggle view mode">
+        <span class="toggle-label">[ UI MODE ]</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero / Landing Section -->
+    <section id="hero" class="hero-section">
+      <div class="hero-content">
+        <div class="hero-terminal-wrapper">
+          <div class="terminal-intro" id="terminal-intro">
+            <div class="terminal-line" data-cmd="Initializing Security Profile..."><span class="prompt">></span> </div>
+            <div class="terminal-line" data-cmd="Loading Threat Intelligence..."><span class="prompt">></span> </div>
+            <div class="terminal-line" data-cmd="Access Granted"><span class="prompt">></span> </div>
+            <div class="terminal-line cursor-line"><span class="cursor-blink">_</span></div>
+          </div>
+          <div class="hero-profile-avatar" id="hero-profile-avatar">
+            <div class="avatar-scan-line"></div>
+            <img src="images/profile.jpg" alt="Kishan Pandey" onerror="this.style.display='none'; this.nextElementSibling?.classList.add('visible');">
+            <div class="avatar-fallback" aria-hidden="true">KP</div>
+          </div>
+        </div>
+        <h2 class="hero-owner-title">Kishan Pandey — Cybersecurity Portfolio</h2>
+        <p class="hero-subtitle">Security Systems | Linux Monitoring | CTF Practice</p>
+        <h1 class="hero-headline" id="hero-headline">
+          Cybersecurity Student | Linux Security Systems | CTF Player | Python | Bash | Git/GitHub
+        </h1>
+        <p class="hero-subtext">
+          Building real-world Linux security monitoring systems, automation tools, and defensive security pipelines.
+        </p>
+        <a href="#about" class="cta-btn">Enter Security Console</a>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section about-section">
+      <div class="section-inner">
+        <h2 class="section-title"><span class="title-accent">[</span> About Operator <span class="title-accent">]</span></h2>
+        <div class="about-grid">
+          <div class="about-card">
+            <p>Cybersecurity-focused BTech 6th semester student with strong interest in Linux system security, automation, and defensive security engineering.</p>
+          </div>
+          <div class="about-card">
+            <p>AWS Certified Cloud Practitioner. Active CTF participant. Enjoys building security tools and monitoring systems.</p>
+          </div>
+          <div class="about-card">
+            <p>Focus on hands-on learning and practical security engineering. Real systems, real threats, real solutions.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="section skills-section">
+      <div class="section-inner">
+        <h2 class="section-title"><span class="title-accent">[</span> Technical Capabilities <span class="title-accent">]</span></h2>
+        <div class="skills-grid">
+          <div class="skill-item" data-skill="90">
+            <span class="skill-name">Linux Security</span>
+            <div class="skill-bar"><div class="skill-fill"></div></div>
+          </div>
+          <div class="skill-item" data-skill="85">
+            <span class="skill-name">Python Automation</span>
+            <div class="skill-bar"><div class="skill-fill"></div></div>
+          </div>
+          <div class="skill-item" data-skill="88">
+            <span class="skill-name">Bash Scripting</span>
+            <div class="skill-bar"><div class="skill-fill"></div></div>
+          </div>
+          <div class="skill-item" data-skill="82">
+            <span class="skill-name">Git & GitHub</span>
+            <div class="skill-bar"><div class="skill-fill"></div></div>
+          </div>
+          <div class="skill-item" data-skill="80">
+            <span class="skill-name">System Monitoring</span>
+            <div class="skill-bar"><div class="skill-fill"></div></div>
+          </div>
+          <div class="skill-item" data-skill="78">
+            <span class="skill-name">Log Analysis</span>
+            <div class="skill-bar"><div class="skill-fill"></div></div>
+          </div>
+          <div class="skill-item" data-skill="72">
+            <span class="skill-name">Networking Basics</span>
+            <div class="skill-bar"><div class="skill-fill"></div></div>
+          </div>
+          <div class="skill-item" data-skill="75">
+            <span class="skill-name">Flask (Dashboard Layer)</span>
+            <div class="skill-bar"><div class="skill-fill"></div></div>
+          </div>
+          <div class="skill-item" data-skill="70">
+            <span class="skill-name">Cloud Security (AWS)</span>
+            <div class="skill-bar"><div class="skill-fill"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Project Section - SentriX -->
+    <section id="projects" class="section projects-section">
+      <div class="section-inner">
+        <h2 class="section-title"><span class="title-accent">[</span> Featured Deployment <span class="title-accent">]</span></h2>
+        <div class="project-card sentrix">
+          <div class="project-header">
+            <h3>SentriX</h3>
+            <span class="project-badge">HIDS</span>
+          </div>
+          <p class="project-tagline">Host-Based Intrusion Detection & Automated Response System</p>
+          <p class="project-desc">
+            A Linux host-based security monitoring system that performs continuous SSH authentication monitoring, file integrity tracking, process behavior analysis, risk scoring, and automated response actions such as firewall blocking and process termination.
+          </p>
+          <div class="project-features">
+            <span class="feature-tag">Real-time log monitoring</span>
+            <span class="feature-tag">Risk scoring pipeline</span>
+            <span class="feature-tag">Automated response engine</span>
+            <span class="feature-tag">Alerting system</span>
+            <span class="feature-tag">Web-based dashboard</span>
+            <span class="feature-tag">Background service</span>
+          </div>
+          <div class="architecture-flow">
+            <div class="flow-node">Log Sources</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node">Parser</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node">Risk Engine</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node">Response</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node">Dashboard</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTF Section -->
+    <section id="ctf" class="section ctf-section">
+      <div class="section-inner">
+        <h2 class="section-title"><span class="title-accent">[</span> Offensive Practice — CTF Arena <span class="title-accent">]</span></h2>
+        <div class="ctf-content">
+          <div class="ctf-info">
+            <p>Solving CTF challenges to sharpen offensive security skills. Hands-on practice with real-world vulnerability scenarios.</p>
+            <ul class="ctf-skills">
+              <li>Vulnerability analysis</li>
+              <li>Exploitation basics</li>
+              <li>Networking understanding</li>
+              <li>Linux command-line mastery</li>
+            </ul>
+          </div>
+          <div class="ctf-terminal">
+            <div class="terminal-header">
+              <span class="term-dot red"></span>
+              <span class="term-dot yellow"></span>
+              <span class="term-dot green"></span>
+              <span class="term-title">ctf_challenge.log</span>
+            </div>
+            <div class="terminal-body">
+              <div class="ctf-log-line">$ nmap -sV target.ctf.local</div>
+              <div class="ctf-log-line">PORT   STATE SERVICE VERSION</div>
+              <div class="ctf-log-line">22/tcp open  ssh     OpenSSH 8.2</div>
+              <div class="ctf-log-line">80/tcp open  http    nginx 1.18.0</div>
+              <div class="ctf-log-line">$ curl -s http://target.ctf.local/ | grep flag</div>
+              <div class="ctf-log-line success">FLAG{exploitation_complete}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Certification Section -->
+    <section id="certifications" class="section cert-section">
+      <div class="section-inner">
+        <h2 class="section-title"><span class="title-accent">[</span> Credentials <span class="title-accent">]</span></h2>
+        <div class="cert-card">
+          <div class="cert-icon">AWS</div>
+          <h3>AWS Certified Cloud Practitioner</h3>
+          <p class="cert-issuer">Amazon Web Services</p>
+          <div class="cert-focus">
+            <span>Cloud fundamentals</span>
+            <span>IAM basics</span>
+            <span>Shared responsibility model</span>
+            <span>Security best practices</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience Timeline -->
+    <section id="timeline" class="section timeline-section">
+      <div class="section-inner">
+        <h2 class="section-title"><span class="title-accent">[</span> Mission Timeline <span class="title-accent">]</span></h2>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-marker"></div>
+            <div class="timeline-content">
+              <span class="timeline-label">Phase 1</span>
+              <h4>Started Linux security learning</h4>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-marker"></div>
+            <div class="timeline-content">
+              <span class="timeline-label">Phase 2</span>
+              <h4>Entered CTF competitions</h4>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-marker"></div>
+            <div class="timeline-content">
+              <span class="timeline-label">Phase 3</span>
+              <h4>Built SentriX system</h4>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-marker"></div>
+            <div class="timeline-content">
+              <span class="timeline-label">Phase 4</span>
+              <h4>Achieved AWS certification</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section contact-section">
+      <div class="section-inner">
+        <h2 class="section-title"><span class="title-accent">[</span> Establish Contact <span class="title-accent">]</span></h2>
+        <div class="contact-content">
+          <form class="contact-form" id="contact-form">
+            <input type="email" name="email" placeholder="your.email@domain.com" required>
+            <textarea name="message" placeholder="Your message..." rows="4" required minlength="10" maxlength="2000"></textarea>
+            <button type="submit" class="contact-submit-btn">Send Message</button>
+          </form>
+          <div class="contact-feedback" id="contact-feedback" aria-live="polite"></div>
+          <div class="contact-links">
+            <a href="https://github.com/val3nt1n3-d4c" target="_blank" rel="noopener" class="contact-link">
+              <span class="link-icon">GitHub</span>
+            </a>
+            <a href="https://www.linkedin.com/in/val3nt1n3-d4c/" target="_blank" rel="noopener" class="contact-link">
+              <span class="link-icon">LinkedIn</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="main-footer">
+    <p>Built with security mindset. Designed for performance. Focused on real-world systems.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
