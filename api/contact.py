@@ -4,9 +4,6 @@ import smtplib
 from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from flask import Flask, request, jsonify
-
-app = Flask(__name__)
 
 EMAIL_USER = os.environ.get("EMAIL_USER")
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
@@ -22,18 +19,35 @@ def validate_email(email):
     return bool(re.match(pattern, email))
 
 
-@app.route("/", methods=["POST"])
-def contact():
-    data = request.get_json() or {}
+def handler(request):
+    if request.method != "POST":
+        return {
+            "statusCode": 405,
+            "body": "Method Not Allowed"
+        }
 
-    email = data.get("email", "").strip()[:EMAIL_MAX_LENGTH]
-    message = data.get("message", "").strip()[:MESSAGE_MAX_LENGTH]
+    try:
+        data = request.json or {}
+    except Exception:
+        return {
+            "statusCode": 400,
+            "body": "Invalid JSON"
+        }
+
+    email = (data.get("email") or "").strip()[:EMAIL_MAX_LENGTH]
+    message = (data.get("message") or "").strip()[:MESSAGE_MAX_LENGTH]
 
     if not validate_email(email):
-        return jsonify({"status": "error", "message": "Invalid email"}), 400
+        return {
+            "statusCode": 400,
+            "body": "Invalid email"
+        }
 
     if len(message) < MESSAGE_MIN_LENGTH:
-        return jsonify({"status": "error", "message": "Message too short"}), 400
+        return {
+            "statusCode": 400,
+            "body": "Message too short"
+        }
 
     msg = MIMEMultipart()
     msg["Subject"] = "[Portfolio Contact]"
@@ -54,6 +68,13 @@ Time: {datetime.utcnow()} UTC
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
             server.login(EMAIL_USER, EMAIL_PASSWORD)
             server.sendmail(EMAIL_USER, RECEIVER_EMAIL, msg.as_string())
-        return jsonify({"status": "success"}), 200
     except Exception as e:
-        return jsonify({"status": "error", "message": "SMTP failure"}), 500
+        return {
+            "statusCode": 500,
+            "body": f"SMTP error: {str(e)}"
+        }
+
+    return {
+        "statusCode": 200,
+        "body": "Message sent"
+    }
