@@ -13,6 +13,11 @@ EMAIL_MAX_LENGTH = 254
 MESSAGE_MIN_LENGTH = 10
 MESSAGE_MAX_LENGTH = 2000
 
+def handler(request):
+    return {
+        "statusCode": 200,
+        "body": "API WORKING"
+    }
 
 def validate_email(email):
     pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
