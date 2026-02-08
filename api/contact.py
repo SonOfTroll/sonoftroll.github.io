@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 EMAIL_USER = os.environ.get("EMAIL_USER")
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
-RECEIVER_EMAIL = os.environ.get("progb4pawgs@gmail.com")
+RECEIVER_EMAIL = os.environ.get("RECEIVER_EMAIL")
 
 EMAIL_MAX_LENGTH = 254
 MESSAGE_MIN_LENGTH = 10
