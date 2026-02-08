@@ -239,9 +239,8 @@
     const feedback = document.getElementById('contact-feedback');
     if (!form || !feedback) return;
 
-    const API_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-      ? 'http://localhost:5000/api/contact'
-      : '/api/contact';
+    const API_URL = "/api/contact";
+
 
     function showFeedback(success, lines) {
       feedback.className = 'contact-feedback ' + (success ? 'success' : 'error');
