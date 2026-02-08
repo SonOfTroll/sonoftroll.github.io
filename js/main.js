@@ -233,61 +233,63 @@
     });
   }
 
-  // ========== Contact Form Handler ==========
-  function initContactForm() {
-    const form = document.getElementById('contact-form');
-    const feedback = document.getElementById('contact-feedback');
-    if (!form || !feedback) return;
+// ========== Contact Form Handler ==========
+function initContactForm() {
+  const form = document.getElementById('contact-form');
+  const feedback = document.getElementById('contact-feedback');
+  if (!form || !feedback) return;
 
-    const API_URL = "/api/contact";
+  const API_URL = "/api/contact";
 
+  function showFeedback(success, lines) {
+    feedback.className = 'contact-feedback ' + (success ? 'success' : 'error');
+    feedback.innerHTML = lines.map(line => `<div class="feedback-line">${line}</div>`).join('');
+  }
 
-    function showFeedback(success, lines) {
-      feedback.className = 'contact-feedback ' + (success ? 'success' : 'error');
-      feedback.innerHTML = lines.map(line => `<div class="feedback-line">${line}</div>`).join('');
-    }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const submitBtn = form.querySelector('button[type="submit"]');
-      const email = form.querySelector('input[name="email"]').value.trim();
-      const message = form.querySelector('textarea[name="message"]').value.trim();
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const email = form.querySelector('input[name="email"]').value.trim();
+    const message = form.querySelector('textarea[name="message"]').value.trim();
 
-      submitBtn.disabled = true;
-      feedback.className = 'contact-feedback';
-      feedback.innerHTML = '';
+    submitBtn.disabled = true;
+    feedback.className = 'contact-feedback';
+    feedback.innerHTML = '';
 
-      try {
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, message })
-        });
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, message })
+      });
 
-        const data = await res.json().catch(() => ({}));
+      const text = await res.text();
+      console.log('API response:', res.status, text);
 
-        if (res.ok && data.status === 'success') {
-          showFeedback(true, [
-            '> Transmission successful',
-            '> Message delivered to operator'
-          ]);
-          form.reset();
-        } else {
-          showFeedback(false, [
-            '> Transmission failed',
-            '> Retry connection'
-          ]);
-        }
-      } catch (err) {
+      if (res.ok) {
+        showFeedback(true, [
+          '> Transmission successful',
+          '> Message delivered to operator'
+        ]);
+        form.reset();
+      } else {
         showFeedback(false, [
           '> Transmission failed',
           '> Retry connection'
         ]);
-      } finally {
-        submitBtn.disabled = false;
       }
-    });
-  }
+    } catch (err) {
+      console.error(err);
+      showFeedback(false, [
+        '> Transmission failed',
+        '> Retry connection'
+      ]);
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+}
 
   // ========== Mobile Nav Toggle ==========
   function initMobileNav() {
