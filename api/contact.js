@@ -58,7 +58,7 @@ export default async function handler(req) {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      from: "Portfolio <onboarding@resend.dev>",
+      from: `Portfolio <${process.env.RESEND_FROM}>`,
       to: [process.env.RECEIVER_EMAIL],
       subject: "Portfolio Contact Message",
       html: `
