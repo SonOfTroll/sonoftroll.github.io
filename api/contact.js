@@ -8,129 +8,106 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type"
 };
 
-// --- utils ---
-async function sha256(input) {
-  const enc = new TextEncoder().encode(input);
-  const hash = await crypto.subtle.digest("SHA-256", enc);
-  return [...new Uint8Array(hash)]
-    .map(b => b.toString(16).padStart(2, "0"))
-    .join("")
-    .slice(0, 16);
+/* ================= EMAIL VALIDATION ================= */
+
+function isValidEmailSyntax(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-function getIP(req) {
-  return (
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    req.headers.get("x-real-ip") ||
-    "unknown"
-  );
+function isAllowedGmailDomain(email) {
+  const domain = email.split("@")[1]?.toLowerCase();
+  return domain === "gmail.com" || domain === "googlemail.com";
 }
 
-function ipSubnet(ip) {
-  if (!ip.includes(".")) return "unknown";
-  const parts = ip.split(".");
-  return `${parts[0]}.${parts[1]}.${parts[2]}.0/24`;
+async function hasMXRecord(domain) {
+  try {
+    const res = await fetch(`https://dns.google/resolve?name=${domain}&type=MX`);
+    const data = await res.json();
+    return Array.isArray(data.Answer) && data.Answer.length > 0;
+  } catch {
+    return false;
+  }
 }
+
+/* ================= DEVICE DETECTION ================= */
+
+function detectDevice(ua) {
+  ua = ua.toLowerCase();
+
+  if (ua.includes("android")) return "Android phone";
+  if (ua.includes("iphone")) return "iPhone";
+  if (ua.includes("ipad")) return "iPad";
+  if (ua.includes("windows")) return "Windows laptop / desktop";
+  if (ua.includes("linux")) return "Linux desktop / laptop";
+
+  return "Unknown device";
+}
+
+/* ================= MAIN HANDLER ================= */
 
 export default async function handler(req) {
-  // CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: corsHeaders });
   }
 
   if (req.method !== "POST") {
-    return new Response("Method Not Allowed", {
-      status: 405,
-      headers: corsHeaders
-    });
+    return new Response("Method Not Allowed", { status: 405, headers: corsHeaders });
   }
 
-  let body;
+  let data;
   try {
-    body = await req.json();
+    data = await req.json();
   } catch {
-    return new Response("Invalid JSON", {
-      status: 400,
-      headers: corsHeaders
-    });
+    return new Response("Invalid JSON", { status: 400, headers: corsHeaders });
   }
 
-  const { email, message, screen, timezone, locale, cores, memory } = body;
+  const email = String(data.email || "").trim().toLowerCase();
+  const message = String(data.message || "").trim();
 
-  if (!email || !message) {
-    return new Response("Missing fields", {
-      status: 400,
-      headers: corsHeaders
-    });
+  /* 🚫 HARD BLOCK EMAIL HERE */
+  if (!isValidEmailSyntax(email)) {
+    return new Response("Invalid email format", { status: 400, headers: corsHeaders });
   }
 
-  // --- headers ---
+  if (!isAllowedGmailDomain(email)) {
+    return new Response("Only Gmail allowed", { status: 403, headers: corsHeaders });
+  }
+
+  const domain = email.split("@")[1];
+  if (!(await hasMXRecord(domain))) {
+    return new Response("Email domain invalid", { status: 403, headers: corsHeaders });
+  }
+
+  /* ================= METADATA ================= */
+
   const ua = req.headers.get("user-agent") || "unknown";
-  const lang = req.headers.get("accept-language") || "unknown";
-  const secFetch = req.headers.get("sec-fetch-site") || "unknown";
-  const https = req.headers.get("x-forwarded-proto") === "https";
+  const ip =
+    req.headers.get("x-forwarded-for")?.split(",")[0] ||
+    req.headers.get("x-real-ip") ||
+    "unknown";
 
-  // --- IP ---
-  const ip = getIP(req);
-  const subnet = ipSubnet(ip);
+  const device = detectDevice(ua);
 
-  // --- fingerprint ---
-  const fingerprintSource = [
-    ua,
-    lang,
-    timezone,
-    locale,
-    screen,
-    cores,
-    memory,
-    subnet
-  ].join("|");
-
-  const fingerprint = "fp_" + await sha256(fingerprintSource);
-
-  // --- TELEGRAM PAYLOAD ---
-  const text = `
+  const telegramText = `
 📨 New Portfolio Message
 
 👤 Email:
 ${email}
 
+📱 Device:
+${device}
+
 💬 Message:
 ${message}
-
-🧬 Fingerprint:
-${fingerprint}
 
 🌐 IP:
 ${ip}
 
-🧱 Subnet:
-${subnet}
-
-🕰 Timezone:
-${timezone}
-
-🗣 Locale:
-${locale}
-
-🖥 Screen:
-${screen}
-
-⚙️ CPU Cores:
-${cores}
-
-💾 Device Memory:
-${memory} GB
-
 🧭 User-Agent:
 ${ua}
-
-🔐 HTTPS:
-${https}
-
-🔏 Sec-Fetch-Site:
-${secFetch}
 `;
+
+  /* ================= TELEGRAM ================= */
 
   const tgRes = await fetch(
     `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
@@ -139,20 +116,14 @@ ${secFetch}
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         chat_id: process.env.TELEGRAM_CHAT_ID,
-        text
+        text: telegramText
       })
     }
   );
 
   if (!tgRes.ok) {
-    return new Response("Telegram failed", {
-      status: 500,
-      headers: corsHeaders
-    });
+    return new Response("Telegram failed", { status: 500, headers: corsHeaders });
   }
 
-  return new Response(
-    JSON.stringify({ status: "success" }),
-    { status: 200, headers: corsHeaders }
-  );
+  return new Response("Sent", { status: 200, headers: corsHeaders });
 }
