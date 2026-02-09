@@ -1077,3 +1077,89 @@ main {
     padding: 3rem 1rem;
   }
 }
+/* ============================================
+   THEME SYSTEM (FIXED)
+   ============================================ */
+
+/* ---------- DARK THEME (DEFAULT / TERMINAL) ---------- */
+body.dark-theme {
+  --bg-deep: #0a0a0b;
+  --bg-charcoal: #121214;
+  --bg-card: #161618;
+
+  --text-primary: #e8e8e8;
+  --text-muted: #8a8a8e;
+
+  --accent-green: #00ff88;
+  --accent-cyan: #00d4ff;
+
+  --border-subtle: rgba(0, 255, 136, 0.15);
+
+  background: var(--bg-deep);
+  color: var(--text-primary);
+}
+
+body.dark-theme #grid-bg {
+  opacity: 1;
+}
+
+body.dark-theme #particles {
+  opacity: 1;
+}
+
+/* ---------- LIGHT THEME (CLEAN / PROFESSIONAL) ---------- */
+body.light-theme {
+  --bg-deep: #f7f7f8;
+  --bg-charcoal: #ffffff;
+  --bg-card: #ffffff;
+
+  --text-primary: #111111;
+  --text-muted: #555555;
+
+  --accent-green: #0f9d58;
+  --accent-cyan: #007acc;
+
+  --border-subtle: rgba(0, 0, 0, 0.12);
+
+  background: var(--bg-deep);
+  color: var(--text-primary);
+}
+
+body.light-theme #grid-bg {
+  opacity: 0.15;
+}
+
+body.light-theme #particles {
+  opacity: 0;
+}
+
+/* Cards */
+body.light-theme .about-card,
+body.light-theme .skill-item,
+body.light-theme .project-card,
+body.light-theme .cert-card,
+body.light-theme .terminal-intro,
+body.light-theme .contact-form input,
+body.light-theme .contact-form textarea {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+/* Header */
+body.light-theme .main-header {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* Buttons */
+body.light-theme .cta-btn,
+body.light-theme .contact-form button {
+  color: var(--accent-green);
+  border-color: var(--accent-green);
+}
+
+body.light-theme .cta-btn:hover,
+body.light-theme .contact-form button:hover {
+  background: var(--accent-green);
+  color: #ffffff;
+}
