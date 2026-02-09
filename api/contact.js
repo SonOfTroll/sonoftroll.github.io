@@ -14,71 +14,62 @@ export default async function handler(req) {
   }
 
   if (req.method !== "POST") {
-    return new Response(
-      JSON.stringify({ error: "Method not allowed" }),
-      { status: 405, headers: corsHeaders }
-    );
+    return new Response("Method Not Allowed", { status: 405, headers: corsHeaders });
   }
 
-  let body;
+  let data;
   try {
-    body = await req.json();
+    data = await req.json();
   } catch {
-    return new Response(
-      JSON.stringify({ error: "Invalid JSON" }),
-      { status: 400, headers: corsHeaders }
-    );
+    return new Response("Invalid JSON", { status: 400, headers: corsHeaders });
   }
 
-  const { email, message } = body;
+  const { email, message } = data;
   if (!email || !message) {
-    return new Response(
-      JSON.stringify({ error: "Missing fields" }),
-      { status: 400, headers: corsHeaders }
-    );
+    return new Response("Missing fields", { status: 400, headers: corsHeaders });
   }
 
-  // ===== IP CAPTURE (EDGE SAFE) =====
+  // 🔍 Capture metadata
   const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("x-forwarded-for")?.split(",")[0] ||
     req.headers.get("cf-connecting-ip") ||
     "unknown";
 
-  const country =
-    req.headers.get("x-vercel-ip-country") || "unknown";
+  const userAgent = req.headers.get("user-agent") || "unknown";
+  const country = req.headers.get("cf-ipcountry") || "unknown";
 
-  const asn =
-    req.headers.get("x-vercel-ip-asn") || "unknown";
+  const text = `
+📨 *Portfolio Contact*
 
-  // ===== SEND EMAIL =====
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      from: `Portfolio <${process.env.RESEND_FROM}>`,
-      to: [process.env.RECEIVER_EMAIL],
-      subject: "Portfolio Contact Message",
-      html: `
-        <h3>New Message</h3>
-        <p><b>Email:</b> ${email}</p>
-        <p><b>Message:</b></p>
-        <pre>${message}</pre>
-        <hr/>
-        <p><b>IP:</b> ${ip}</p>
-        <p><b>Country:</b> ${country}</p>
-        <p><b>ASN:</b> ${asn}</p>
-      `
-    })
-  });
+✉️ *Email:* ${email}
 
-  if (!res.ok) {
-    return new Response(
-      JSON.stringify({ status: "blocked" }),
-      { status: 200, headers: corsHeaders }
-    );
+💬 *Message:*
+${message}
+
+🌍 *IP:* ${ip}
+🏳️ *Country:* ${country}
+🖥️ *User-Agent:*
+${userAgent}
+`;
+
+  const telegramRes = await fetch(
+    `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: process.env.TELEGRAM_CHAT_ID,
+        text,
+        parse_mode: "Markdown"
+      })
+    }
+  );
+
+  if (!telegramRes.ok) {
+    return new Response("Telegram send failed", {
+      status: 500,
+      headers: corsHeaders
+    });
   }
 
   return new Response(
