@@ -33,14 +33,21 @@ async function hasMXRecord(domain) {
 
 function detectDevice(ua) {
   ua = ua.toLowerCase();
-
   if (ua.includes("android")) return "Android phone";
   if (ua.includes("iphone")) return "iPhone";
   if (ua.includes("ipad")) return "iPad";
-  if (ua.includes("windows")) return "Windows laptop / desktop";
+  if (ua.includes("windows")) return "Windows desktop / laptop";
   if (ua.includes("linux")) return "Linux desktop / laptop";
-
   return "Unknown device";
+}
+
+/* ================= FINGERPRINT ================= */
+
+async function generateFingerprint(input) {
+  const data = new TextEncoder().encode(input);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = [...new Uint8Array(hashBuffer)];
+  return "fp_" + hashArray.slice(0, 8).map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
 /* ================= MAIN HANDLER ================= */
@@ -60,18 +67,22 @@ export default async function handler(req) {
   } catch {
     return new Response("Invalid JSON", { status: 400, headers: corsHeaders });
   }
+
   const {
-  email,
-  message,
-  screen,
-  timezone,
-  locale,
-  cores,
-  memory
-} = data;
+    email,
+    message,
+    screen,
+    timezone,
+    locale,
+    cores,
+    memory
+  } = data;
 
+  /* 🚫 EMAIL HARD BLOCK */
+  if (!email || !message) {
+    return new Response("Missing fields", { status: 400, headers: corsHeaders });
+  }
 
-  /* 🚫 HARD BLOCK EMAIL HERE */
   if (!isValidEmailSyntax(email)) {
     return new Response("Invalid email format", { status: 400, headers: corsHeaders });
   }
@@ -95,8 +106,14 @@ export default async function handler(req) {
 
   const device = detectDevice(ua);
 
+  const fingerprint = await generateFingerprint(
+    `${ua}|${locale}|${timezone}|${screen}|${cores}|${memory}`
+  );
+
+  /* ================= TELEGRAM ================= */
+
   const telegramText = `
-📨 Hey brother you got a new message
+📨 New Portfolio Message
 
 👤 Email:
 ${email}
@@ -131,8 +148,6 @@ ${memory ?? "unknown"} GB
 🧭 User-Agent:
 ${ua}
 `;
-
-  /* ================= TELEGRAM ================= */
 
   const tgRes = await fetch(
     `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
