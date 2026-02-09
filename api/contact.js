@@ -60,9 +60,16 @@ export default async function handler(req) {
   } catch {
     return new Response("Invalid JSON", { status: 400, headers: corsHeaders });
   }
+  const {
+  email,
+  message,
+  screen,
+  timezone,
+  locale,
+  cores,
+  memory
+} = data;
 
-  const email = String(data.email || "").trim().toLowerCase();
-  const message = String(data.message || "").trim();
 
   /* 🚫 HARD BLOCK EMAIL HERE */
   if (!isValidEmailSyntax(email)) {
@@ -89,7 +96,7 @@ export default async function handler(req) {
   const device = detectDevice(ua);
 
   const telegramText = `
-📨 New Portfolio Message
+📨 Hey brother you got a new message
 
 👤 Email:
 ${email}
@@ -100,8 +107,26 @@ ${device}
 💬 Message:
 ${message}
 
+🧬 Fingerprint:
+${fingerprint}
+
 🌐 IP:
 ${ip}
+
+🕰 Timezone:
+${timezone || "unknown"}
+
+🗣 Locale:
+${locale || "unknown"}
+
+🖥 Screen:
+${screen || "unknown"}
+
+⚙️ CPU Cores:
+${cores ?? "unknown"}
+
+💾 Device Memory:
+${memory ?? "unknown"} GB
 
 🧭 User-Agent:
 ${ua}
