@@ -1,89 +1,140 @@
 export const config = {
-  runtime: "edge"
+  runtime: "edge",
 };
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type"
+  "Access-Control-Allow-Headers": "Content-Type",
 };
 
 export default async function handler(req) {
-  // Preflight
+  // Handle CORS preflight
   if (req.method === "OPTIONS") {
-    return new Response(null, { status: 204, headers: corsHeaders });
+    return new Response(null, {
+      status: 204,
+      headers: corsHeaders,
+    });
   }
 
   if (req.method !== "POST") {
-    return new Response("Method Not Allowed", {
-      status: 405,
-      headers: corsHeaders
-    });
+    return new Response(
+      JSON.stringify({ error: "Method Not Allowed" }),
+      {
+        status: 405,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json",
+        },
+      }
+    );
   }
 
   let body;
   try {
     body = await req.json();
   } catch {
-    return new Response("Invalid JSON", { status: 400, headers: corsHeaders });
+    return new Response(
+      JSON.stringify({ error: "Invalid JSON" }),
+      {
+        status: 400,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json",
+        },
+      }
+    );
   }
 
   const { email, message } = body;
+
   if (!email || !message) {
-    return new Response("Missing fields", { status: 400, headers: corsHeaders });
+    return new Response(
+      JSON.stringify({ error: "Missing fields" }),
+      {
+        status: 400,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json",
+        },
+      }
+    );
   }
 
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
+  const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+  const CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-  if (!token || !chatId) {
-    return new Response("Telegram env vars missing", {
-      status: 500,
-      headers: corsHeaders
-    });
+  if (!BOT_TOKEN || !CHAT_ID) {
+    return new Response(
+      JSON.stringify({ error: "Telegram env vars missing" }),
+      {
+        status: 500,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json",
+        },
+      }
+    );
   }
 
-  // Extract IP + UA
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0] ||
-    req.headers.get("x-real-ip") ||
-    "unknown";
+  // Build safe plain-text message (NO markdown → avoids crashes)
+  const text =
+`📨 New Portfolio Message
 
-  const ua = req.headers.get("user-agent") || "unknown";
+👤 Email:
+${email}
 
-  const text = `
-📩 *Portfolio Contact*
-
-👤 Email: ${email}
 💬 Message:
 ${message}
 
-🌍 IP: ${ip}
-🧭 UA: ${ua}
-`.trim();
+🌐 IP:
+${req.headers.get("x-forwarded-for") || "unknown"}
+
+🧭 User-Agent:
+${req.headers.get("user-agent") || "unknown"}
+`;
 
   const tgRes = await fetch(
-    `https://api.telegram.org/bot${token}/sendMessage`,
+    `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,
     {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
-        chat_id: chatId,
+        chat_id: CHAT_ID,
         text,
-        parse_mode: "Markdown"
-      })
+      }),
     }
   );
 
   if (!tgRes.ok) {
-    return new Response("Telegram failed", {
-      status: 500,
-      headers: corsHeaders
-    });
+    const errText = await tgRes.text();
+    return new Response(
+      JSON.stringify({
+        status: "failed",
+        telegram_status: tgRes.status,
+        telegram_response: errText,
+      }),
+      {
+        status: 500,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json",
+        },
+      }
+    );
   }
 
+  // 👇 THIS is what your frontend expects
   return new Response(
     JSON.stringify({ status: "success" }),
-    { status: 200, headers: corsHeaders }
+    {
+      status: 200,
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "application/json",
+      },
+    }
   );
 }
