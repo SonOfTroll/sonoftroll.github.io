@@ -3,7 +3,7 @@
    Cyber Command Center Aesthetic
    ============================================ */
 
-:root {
+body.dark-theme {
   --bg-deep: #0a0a0b;
   --bg-charcoal: #121214;
   --bg-card: #161618;
@@ -17,6 +17,24 @@
   --glow-cyan: 0 0 20px rgba(0, 212, 255, 0.3);
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   --font-ui: 'Inter', system-ui, sans-serif;
+}
+body.light-theme {
+  --bg-deep: #f5f6f8;
+  --bg-charcoal: #ffffff;
+  --bg-card: #ffffff;
+  --border-subtle: rgba(0, 0, 0, 0.15);
+  --accent-green: #008f6a;
+  --accent-cyan: #0066ff;
+  --accent-dim: rgba(0, 143, 106, 0.6);
+  --text-primary: #0d0d0d;
+  --text-muted: #444;
+  --glow-green: 0 0 20px rgba(0, 143, 106, 0.25);
+  --glow-cyan: 0 0 20px rgba(0, 102, 255, 0.25);
+}
+body {
+  font-family: var(--font-ui);
+  background: var(--bg-deep);
+  color: var(--text-primary);
 }
 
 * {
@@ -976,88 +994,7 @@ main {
   color: var(--text-muted);
 }
 
-/* ========== TERMINAL MODE (default) ========== */
-body.terminal-mode {
-  --font-primary: var(--font-mono);
-  --bg-primary: #060608;
-  --section-bg: rgba(0, 0, 0, 0.6);
-}
 
-body.terminal-mode #grid-bg {
-  opacity: 1;
-}
-
-body.terminal-mode #particles {
-  opacity: 1;
-}
-
-body.terminal-mode .section-title,
-body.terminal-mode .about-card p,
-body.terminal-mode .skill-name,
-body.terminal-mode .project-desc,
-body.terminal-mode .timeline-content h4 {
-  font-family: var(--font-mono);
-}
-
-body.terminal-mode .about-card,
-body.terminal-mode .skill-item,
-body.terminal-mode .project-card,
-body.terminal-mode .cert-card {
-  background: var(--section-bg);
-  border-style: solid;
-}
-
-body.terminal-mode .hero-owner-title {
-  font-family: var(--font-mono);
-}
-
-/* ========== UI MODE ========== */
-body.ui-mode {
-  --font-primary: var(--font-ui);
-  --bg-primary: var(--bg-deep);
-}
-
-body.ui-mode #grid-bg {
-  opacity: 0.3;
-}
-
-body.ui-mode #particles {
-  opacity: 0;
-}
-
-body.ui-mode .section-title,
-body.ui-mode .about-card p,
-body.ui-mode .skill-name,
-body.ui-mode .project-desc,
-body.ui-mode .timeline-content h4 {
-  font-family: var(--font-ui);
-}
-
-body.ui-mode .about-card,
-body.ui-mode .skill-item,
-body.ui-mode .project-card,
-body.ui-mode .cert-card {
-  background: var(--bg-card);
-}
-
-body.ui-mode .hero-owner-title {
-  font-family: var(--font-ui);
-}
-
-/* Disable typing animation in UI mode */
-body.ui-mode .hero-headline {
-  animation: none;
-  opacity: 1;
-  border: none;
-}
-
-body.ui-mode .terminal-intro .terminal-line[data-cmd] {
-  opacity: 1;
-}
-
-body.ui-mode .terminal-line.typed {
-  opacity: 1;
-}
 
 /* Responsive */
 @media (max-width: 768px) {
