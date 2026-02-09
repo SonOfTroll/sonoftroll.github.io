@@ -261,7 +261,18 @@ function initContactForm() {
       const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, message })
+        // body: JSON.stringify({   email,   message,    // fingerprint entropy (safe + legal)   screen: `${screen.width}x${screen.height}`,   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,   locale: navigator.language,   cores: navigator.hardwareConcurrency || null,   memory: navigator.deviceMemory || null })
+        body: JSON.stringify({
+          email,
+          message,
+
+          // fingerprint entropy (safe + legal)
+          screen: `${screen.width}x${screen.height}`,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          locale: navigator.language,
+          cores: navigator.hardwareConcurrency || null,
+          memory: navigator.deviceMemory || null
+          })
       });
 
       const text = await res.text();
