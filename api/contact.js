@@ -113,39 +113,39 @@ export default async function handler(req) {
   /* ================= TELEGRAM ================= */
 
   const telegramText = `
-📨 New Portfolio Message
+Hey brother got a new message for you
 
-👤 Email:
+Email:
 ${email}
 
-📱 Device:
+Device:
 ${device}
 
-💬 Message:
+Message:
 ${message}
 
-🧬 Fingerprint:
+Fingerprint:
 ${fingerprint}
 
-🌐 IP:
+IP:
 ${ip}
 
-🕰 Timezone:
+Timezone:
 ${timezone || "unknown"}
 
-🗣 Locale:
+Locale:
 ${locale || "unknown"}
 
-🖥 Screen:
+Screen:
 ${screen || "unknown"}
 
-⚙️ CPU Cores:
+CPU Cores:
 ${cores ?? "unknown"}
 
-💾 Device Memory:
+Device Memory:
 ${memory ?? "unknown"} GB
 
-🧭 User-Agent:
+User-Agent:
 ${ua}
 `;
 
